@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DNA results</title>
+<style>
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;background:#f5f5f5;color:#222;
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;
+}
+.phone{width:100%;max-width:430px;min-height:100vh;margin:auto;background:#fff;overflow:hidden}
+.browser{height:78px;background:#eee;display:flex;align-items:center;padding:0 18px;gap:14px}
+.hamburger{width:34px;font-size:30px;line-height:1}
+.address{flex:1;background:#c9c9c9;border-radius:30px;height:48px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:20px}
+.refresh{font-size:30px;color:#fff}
+.titlebar{height:90px;display:flex;align-items:center;padding:0 22px;border-bottom:1px solid #e7e7e7;gap:25px}
+.menu{font-size:31px}.title{font-size:27px;font-weight:500}
+.section-head{height:86px;display:flex;align-items:center;gap:18px;padding:0 28px;border-bottom:1px solid #ddd;font-size:18px;color:#444}
+.chevron{width:25px;height:25px;border-left:3px solid #111;border-bottom:3px solid #111;transform:rotate(-45deg);margin-top:-9px}
+.result{padding:40px 24px 34px;border-bottom:1px solid #ddd}
+.result-top{display:flex;align-items:flex-start;gap:15px}
+.dot{width:27px;height:27px;border-radius:50%;flex:0 0 27px;margin-top:3px}
+.green{background:#b7e36c}.orange{background:#f47d5a}.blue{background:#5bc0d4}.yellow{background:#e9d96d}
+.result-name{font-size:20px;font-weight:750;line-height:1.18;flex:1}
+.percent{font-size:20px;font-weight:750;white-space:nowrap}
+.subitems{margin:28px 0 0 41px;border-left:2px solid #d0d0d0}
+.subitem{position:relative;padding:0 0 34px 25px;color:#5d5d5d;font-size:16px;line-height:1.45}
+.subitem:last-child{padding-bottom:0}
+.subitem:before{content:"";position:absolute;left:-8px;top:7px;width:12px;height:12px;border-radius:50%;background:#dff1ad;border:2px solid #66872f}
+.simple{padding-top:39px;padding-bottom:39px}.simple .result-top{align-items:center}
+.cta-wrap{padding:26px 24px 34px}
+.cta{
+  width:100%;border:0;border-radius:30px;background:#b23bc1;color:#fff;
+  padding:15px 20px;font-size:19px;font-weight:500;cursor:pointer
+}
+.matches{display:none}
+.matches:target{display:block}
+#ethnicity:not(:target){display:block}
+.back{
+  display:block;margin:18px 24px 0;padding:12px;text-align:center;
+  border:2px solid #b23bc1;border-radius:28px;color:#a932b8;text-decoration:none;font-size:18px
+}
+.matches-head{padding:25px 24px 18px;border-bottom:1px solid #ddd}
+.tabs{display:flex;gap:38px;font-size:18px;white-space:nowrap;overflow:hidden}
+.tab-active{color:#b23bc1;border-bottom:3px solid #b23bc1;padding-bottom:12px}
+.tools{display:flex;gap:28px;padding:18px 24px;color:#555;font-size:17px}
+.count{padding:20px 24px;font-size:17px;color:#555}
+.card{
+  margin:0 16px 24px;background:#fff;border-radius:10px;
+  box-shadow:0 2px 9px rgba(0,0,0,.12);overflow:hidden
+}
+.card-inner{padding:24px 26px 0}
+.new{display:inline-block;border:2px solid #ccc;border-radius:4px;padding:3px 8px;font-size:15px;color:#666;letter-spacing:1px}
+.icons{float:right;color:#999;font-size:25px;letter-spacing:10px}
+.person{display:flex;gap:22px;align-items:center;margin:24px 0 22px}
+.avatar{
+  width:82px;height:82px;border-radius:50%;border:4px solid #25b4cf;
+  background:#fafafa;position:relative;flex:0 0 82px
+}
+.avatar.female{border-color:#ee8585}
+.avatar:before{
+  content:"";position:absolute;width:31px;height:36px;background:#d4d4d4;border-radius:50% 50% 45% 45%;
+  left:22px;top:13px
+}
+.avatar:after{
+  content:"";position:absolute;width:48px;height:29px;background:#e1e1e1;border-radius:28px 28px 8px 8px;
+  left:13px;bottom:8px
+}
+.name{font-size:22px;font-weight:500}.meta{font-size:16px;color:#777;margin-top:8px;line-height:1.4}
+.contact{color:#b23bc1;font-size:18px;margin-top:8px}
+.divider{height:1px;background:#ddd;margin:18px 0 20px}
+.label{font-size:15px;color:#777;margin-bottom:5px}
+.relationship{font-size:21px;margin-bottom:20px;text-decoration:underline dotted;text-underline-offset:6px}
+.stats{font-size:17px;color:#666;line-height:1.55}
+.stats b{font-weight:400;color:#333}
+.insights{border-top:1px solid #ddd;margin-top:22px;padding:20px 0 4px 43px;color:#666;font-size:15px;line-height:1.5;position:relative}
+.insights:before{content:"⌘";position:absolute;left:0;top:17px;color:#aaa;font-size:25px}
+.insight{margin-bottom:16px}
+.purple{color:#b23bc1}
+.buttons{padding:0 26px 25px}
+.btn-outline,.btn-solid{
+  width:100%;border-radius:28px;padding:12px 10px;font-size:18px;cursor:pointer
+}
+.btn-outline{background:#fff;border:2px solid #b23bc1;color:#a932b8}
+.btn-solid{background:#b23bc1;border:2px solid #b23bc1;color:#fff;margin-top:12px}
+.small-note{font-size:12px;color:#888;text-align:center;padding:0 20px 25px}
+
+.overview{padding:32px}.match-total{font-size:23px;color:#777;margin-bottom:46px}.overview-btn{display:inline-block;border:2px solid #b23bc1;border-radius:30px;padding:11px 25px;color:#a932b8;text-decoration:none;font-size:18px;margin-bottom:75px}.relationship-title{display:flex;gap:22px;align-items:flex-start}.target{font-size:62px;line-height:.8}.relationship-title h2{font-size:27px;font-weight:500;margin:0 0 10px}.relationship-title p{font-size:19px;color:#777;line-height:1.35;margin:0}.group{margin-top:52px}.group-title{display:flex;align-items:center;gap:10px;font-size:20px;color:#555}.group-title strong{font-size:50px;color:#222}.avatars{display:flex;gap:18px;margin-top:20px}.mini{width:70px;height:70px;border-radius:50%;border:4px solid #25b4cf;background:#fafafa;position:relative}.mini.f{border-color:#ee8585}.mini:before{content:"";position:absolute;width:27px;height:31px;background:#d3d3d3;border-radius:50%;left:18px;top:10px}.mini:after{content:"";position:absolute;width:42px;height:24px;background:#e0e0e0;border-radius:24px 24px 5px 5px;left:10px;bottom:7px}.mini.dna{border-color:#ee8585;background:linear-gradient(135deg,#20d7e0,#bde7ef)}.more{width:70px;height:70px;border-radius:50%;background:#e7e7e7;display:flex;align-items:center;justify-content:center;font-size:18px;color:#666}.overview-page{display:none}.overview-page:target{display:block}.overview-page:target~.ethnicity-page{display:none}
+</style>
+</head>
+<body>
+<div class="phone">
+
+  <div class="browser">
+    <div class="hamburger">☰</div>
+    <div class="address">myheritage.com</div>
+    <div class="refresh">↻</div>
+  </div>
+
+  <!-- ETHNICITY PAGE -->
+  <main id="ethnicity">
+    <div class="titlebar">
+      <div class="menu">☰</div><div class="title">DNA results</div>
+    </div>
+    <div class="section-head">
+      <div class="chevron"></div><div>Your ethnicity results</div>
+    </div>
+
+    <section class="result">
+      <div class="result-top"><div class="dot green"></div><div class="result-name">Ashkenazi Jewish (Eastern Europe)</div><div class="percent">61.2%</div></div>
+      <div class="subitems">
+        <div class="subitem">Eastern and Central Europe, mostly Poland, Germany, Ukraine, Lithuania, Belarus and Russia</div>
+        <div class="subitem">Eastern Europe, mostly Belarus, Russia, Ukraine, Poland and Lithuania</div>
+        <div class="subitem">Eastern Europe, mostly Lithuania, Poland and Belarus</div>
+        <div class="subitem">Poland, Ukraine, Russia and Romania</div>
+      </div>
+    </section>
+
+    <section class="result simple"><div class="result-top"><div class="dot orange"></div><div class="result-name">Ashkenazi Jewish (Western Europe)</div><div class="percent">5.2%</div></div></section>
+    <section class="result simple"><div class="result-top"><div class="dot blue"></div><div class="result-name">Ashkenazi Jewish (Central Europe)</div><div class="percent">15.2%</div></div></section>
+    <section class="result simple"><div class="result-top"><div class="dot yellow"></div><div class="result-name">Norwegian</div><div class="percent">18.4%</div></div></section>
+
+    <div class="cta-wrap">
+      <a class="cta" href="#overview" style="display:block;text-align:center;text-decoration:none">View DNA Matches</a>
+    </div>
+  </main>
+
+  <!-- DNA MATCH OVERVIEW -->
+  <main id="overview" class="overview-page">
+    <div class="overview">
+      <div class="match-total">You currently have 31,035 matches</div>
+      <a class="overview-btn" href="#matches">View DNA Matches</a>
+      <div class="relationship-title"><div class="target">◎</div><div><h2>Relationships</h2><p>Review your DNA Matches by estimated relationship. Select any relationship to see the matches.</p></div></div>
+      <div class="group"><div class="group-title"><strong>3</strong> Close family ›</div><div class="avatars"><div class="mini"></div><div class="mini f"></div><div class="mini"></div></div></div>
+      <div class="group"><div class="group-title"><strong>1,846</strong> Extended family ›</div><div class="avatars"><div class="mini"></div><div class="mini dna"></div><div class="mini"></div><div class="more">+1,843</div></div></div>
+      <div class="group"><div class="group-title"><strong>29,186</strong> Distant relatives ›</div><div class="avatars"><div class="mini"></div><div class="mini f"></div><div class="mini"></div><div class="more">+29,183</div></div></div>
+    </div>
+    <div class="cta-wrap"><a class="cta" href="#ethnicity">Back to DNA results</a></div>
+  </main>
+
+  <!-- DNA MATCHES PAGE -->
+  <main id="matches" class="matches">
+    <div class="matches-head">
+      <div class="tabs">
+        <div class="tab-active">DNA Matches</div><div>Ancient Origins</div><div>Y-DNA</div>
+      </div>
+    </div>
+    <div class="tools"><span>⚱ Filters</span><span>☷ Sort by</span><span>⌕</span><span>⋮</span></div>
+    <div class="count">Showing 1–5 of 31,035 DNA Matches</div>
+
+    <!-- Anthony Meltzer -->
+    <article class="card">
+      <div class="card-inner">
+        <span class="new">NEW</span><span class="icons">☆ ♧</span>
+        <div class="person">
+          <div class="avatar"></div>
+          <div><div class="name">Anthony Meltzer</div><div class="meta">Age: 70s<br>From: United Kingdom 🇬🇧</div><div class="contact">Contact Anthony</div></div>
+        </div>
+        <div class="divider"></div>
+        <div class="label">Probable relationship</div>
+        <div class="relationship">Father</div>
+        <div class="label">DNA Match quality　●</div>
+        <div class="stats">Shared DNA: <b>49.9% (3,539.1 cM)</b><br>Shared segments: <b>23</b><br>Largest segment: <b>284.3 cM</b></div>
+        <div class="insights">
+          <div class="insight">Appears in a family tree with 6 people that he manages</div>
+          <div class="insight">🏷 Ancestral surnames common to you and Anthony Meltzer include <span class="purple">meltzer; goldman and Freedman.</span></div>
+          <div class="insight">⌖ Anthony Meltzer and you have one shared ancestral place</div>
+        </div>
+      </div>
+      <div class="buttons"><button class="btn-outline">View tree</button><button class="btn-solid">Review DNA Match</button></div>
+    </article>
+
+    <!-- Tanya FOx -->
+    <article class="card">
+      <div class="card-inner">
+        <span class="new">NEW</span><span class="icons">☆ ♧</span>
+        <div class="person">
+          <div class="avatar female"></div>
+          <div><div class="name">Tanya FOx</div><div class="meta">Age: 50s<br>DNA managed by <span style="color:#333">Adam Fox</span></div><div class="contact">Contact　⌄</div></div>
+        </div>
+        <div class="divider"></div>
+        <div class="label">Probable relationship</div>
+        <div class="relationship">Half sister</div>
+        <div class="label">DNA Match quality　●</div>
+        <div class="stats">Shared DNA: <b>27.3% (1,937.7 cM)</b><br>Shared segments: <b>33</b><br>Largest segment: <b>180.4 cM</b></div>
+        <div class="insights">
+          <div class="insight">Appears in a family tree with 58 people, managed by <span style="color:#333">Adam Fox</span> from United Kingdom</div>
+          <div class="insight">🏷 Ancestral surnames common to you and Tanya FOx include <span class="purple">meltzer; goldman; Freedman and 4 more.</span></div>
+          <div class="insight">⟳ Your family tree has 37 Smart Matches™ with this tree. <span class="purple">View Smart Matches</span></div>
+          <div class="insight">⌖ Tanya FOx and you have 2 shared ancestral places</div>
+        </div>
+      </div>
+      <div class="buttons"><button class="btn-outline">View tree</button></div>
+    </article>
+
+    <!-- Jonathan Foux -->
+    <article class="card">
+      <div class="card-inner">
+        <span class="new">NEW</span><span class="icons">☆ ♧</span>
+        <div class="person">
+          <div class="avatar"></div>
+          <div><div class="name">Jonathan Foux</div><div class="meta">Age: 30s<br>From: USA 🇺🇸</div><div class="contact">Contact Jonathan</div></div>
+        </div>
+        <div class="divider"></div>
+        <div class="label">Probable relationship</div>
+        <div class="relationship">1st cousin</div>
+        <div class="label">DNA Match quality　●</div>
+        <div class="stats">Shared DNA: <b>12.3% (869.4 cM)</b><br>Shared segments: <b>31</b><br>Largest segment: <b>90.4 cM</b></div>
+        <div class="insights">
+          <div class="insight">Appears in a family tree with 219 people that he manages</div>
+          <div class="insight">🏷 Ancestral surnames common to you and Jonathan Foux include <span class="purple">meltzer; goldman; Freedman and 3 more.</span></div>
+          <div class="insight">⟳ Your family tree has 24 Smart Matches™ with this tree. <span class="purple">View Smart Matches</span></div>
+          <div class="insight">⌖ Jonathan Foux and you have 3 shared ancestral places</div>
+        </div>
+      </div>
+      <div class="buttons"><button class="btn-outline">View tree</button><button class="btn-solid">Review DNA Match</button></div>
+    </article>
+
+    <!-- James Meltzer -->
+    <article class="card">
+      <div class="card-inner">
+        <span class="new">NEW</span><span class="icons">☆ ♧</span>
+        <div class="person">
+          <div class="avatar"></div>
+          <div><div class="name">James Meltzer</div><div class="meta">Age: 40s<br>From: United Kingdom 🇬🇧</div><div class="contact">Contact James</div></div>
+        </div>
+        <div class="divider"></div>
+        <div class="label">Probable relationship</div>
+        <div class="relationship">2nd cousin</div>
+        <div class="label">DNA Match quality　●</div>
+        <div class="stats">Shared DNA: <b>4.5% (317.2 cM)</b><br>Shared segments: <b>11</b><br>Largest segment: <b>101.6 cM</b></div>
+        <div class="insights">
+          <div class="insight">Appears in a family tree with 3 people that he manages</div>
+          <div class="insight">🏷 Ancestral surnames common to you and James Meltzer include <span class="purple">meltzer.</span></div>
+          <div class="insight">⌖ James Meltzer and you have one shared ancestral place</div>
+        </div>
+      </div>
+      <div class="buttons"><button class="btn-outline">View tree</button><button class="btn-solid">Review DNA Match</button></div>
+    </article>
+
+    <!-- simone marsha bloom -->
+    <article class="card">
+      <div class="card-inner">
+        <span class="new">NEW</span><span class="icons">☆ ♧</span>
+        <div class="person">
+          <div class="avatar female"></div>
+          <div><div class="name">simone marsha bloom</div><div class="meta">Age: 70s<br>From: United Kingdom 🇬🇧<br>DNA managed by <span style="color:#333">brian bloom</span></div><div class="contact">Contact　⌄</div></div>
+        </div>
+        <div class="divider"></div>
+        <div class="label">Probable relationship</div>
+        <div class="relationship">Parent's 1st cousin</div>
+        <div class="label">DNA Match quality　●</div>
+        <div class="stats">Shared DNA: <b>3.3% (235.8 cM)</b><br>Shared segments: <b>13</b><br>Largest segment: <b>38.6 cM</b></div>
+        <div class="insights">
+          <div class="insight">Appears in a family tree with 58 people, managed by <span style="color:#333">brian bloom</span> from United Kingdom</div>
+          <div class="insight">🏷 Ancestral surnames common to you and simone marsha bloom include <span class="purple">victor.</span></div>
+          <div class="insight">⌖ simone marsha bloom and you have one shared ancestral place</div>
+        </div>
+      </div>
+      <div class="buttons"><button class="btn-outline">View tree</button><button class="btn-solid">Review DNA Match</button></div>
+    </article>
+
+    <a class="back" href="#ethnicity">← Back to DNA results</a>
+    <div class="small-note">31,025 DNA matches shown in the original screenshot; the five displayed here are the matches provided in your screenshots.</div>
+  </main>
+</div>
+</body>
+</html>
